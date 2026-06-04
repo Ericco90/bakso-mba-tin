@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Mba Tin</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #C8102E;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 pb-10 overflow-hidden" id="bodyEl">
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm border">
+            <div class="text-center mb-6">
+                <i data-lucide="lock" class="w-12 h-12 text-[#C8102E] mx-auto mb-2"></i>
+                <h2 class="text-2xl font-bold">Admin Login</h2>
+                <p class="text-sm text-gray-500">Masukkan kata sandi untuk mengakses dashboard</p>
+            </div>
+            <form onsubmit="checkPassword(event)">
+                <input type="password" id="adminPassword" placeholder="Kata Sandi" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#C8102E] outline-none mb-4" required>
+                <button type="submit" class="w-full py-3 bg-[#C8102E] hover:bg-red-800 text-white font-bold rounded-xl transition">Masuk</button>
+            </form>
+        </div>
+    </div>
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#C8102E] flex items-center gap-2">
+                <i data-lucide="layout-dashboard"></i> Mba Tin Admin
+            </h1>
+            <a href="index.html" target="_blank" class="text-sm text-gray-500 hover:text-gray-800 underline">Lihat Website</a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+
+
+        <div class="flex space-x-2 mb-6">
+            <button onclick="switchTab('menu')" id="btnTabMenu" class="px-6 py-2 bg-[#C8102E] text-white font-bold rounded-lg transition">Tambah Menu</button>
+            <button onclick="switchTab('gallery')" id="btnTabGallery" class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg transition hover:bg-gray-300">Tambah Galeri</button>
+            <button onclick="switchTab('manage')" id="btnTabManage" class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg transition hover:bg-gray-300 flex items-center gap-2"><i data-lucide="database" class="w-4 h-4"></i> Kelola Data</button>
+        </div>
+
+        <!-- Form Tambah Menu -->
+        <div id="tabMenu" class="bg-white p-6 rounded-xl shadow-sm transition">
+            <h2 class="font-bold text-xl mb-6 border-b pb-2">Tambah Menu Baru</h2>
+            <form id="formMenu" onsubmit="submitData(event, 'Menu')">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nama Menu</label>
+                        <input type="text" id="mNama" required class="w-full p-2 border rounded-lg outline-none focus:border-[#C8102E]">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Kategori</label>
+                        <select id="mKategori" required class="w-full p-2 border rounded-lg outline-none focus:border-[#C8102E]">
+                            <option value="Bakso">Bakso</option>
+                            <option value="Mie Ayam">Mie Ayam</option>
+                            <option value="Minuman">Minuman</option>
+                            <option value="Paket Hemat">Paket Hemat</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Harga (Angka saja)</label>
+                        <input type="number" id="mHarga" required class="w-full p-2 border rounded-lg outline-none focus:border-[#C8102E]">
+                    </div>
+                    <div class="flex items-center mt-6">
+                        <input type="checkbox" id="mBestSeller" class="w-5 h-5 text-[#C8102E] border-gray-300 rounded focus:ring-[#C8102E]">
+                        <label class="ml-2 block text-sm font-medium text-gray-700">Tandai sebagai Best Seller</label>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">Deskripsi</label>
+                    <textarea id="mDeskripsi" rows="3" required class="w-full p-2 border rounded-lg outline-none focus:border-[#C8102E]"></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">Gambar Menu (Max 2MB)</label>
+                    <input type="file" id="mImage" accept="image/*" required class="w-full p-2 border rounded-lg bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#C8102E] file:text-white hover:file:bg-red-800 transition">
+                </div>
+
+                <button type="submit" id="btnSubmitMenu" class="w-full py-3 bg-[#C8102E] hover:bg-red-800 text-white font-bold rounded-lg transition flex justify-center items-center gap-2">
+                    <i data-lucide="upload"></i> Upload & Simpan Menu
+                </button>
+            </form>
+        </div>
+
+        <!-- Form Tambah Galeri -->
+        <div id="tabGallery" class="bg-white p-6 rounded-xl shadow-sm hidden transition">
+            <h2 class="font-bold text-xl mb-6 border-b pb-2">Tambah Gambar Galeri</h2>
+            <form id="formGallery" onsubmit="submitData(event, 'Gallery')">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">Gambar Galeri (Max 2MB)</label>
+                    <input type="file" id="gImage" accept="image/*" required class="w-full p-2 border rounded-lg bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#C8102E] file:text-white hover:file:bg-red-800 transition">
+                </div>
+                
+                <button type="submit" id="btnSubmitGallery" class="w-full py-3 bg-gray-800 hover:bg-black text-white font-bold rounded-lg transition flex justify-center items-center gap-2">
+                    <i data-lucide="upload"></i> Upload & Simpan Galeri
+                </button>
+            </form>
+        </div>
+
+        <!-- Tab Kelola Data -->
+        <div id="tabManage" class="bg-white p-6 rounded-xl shadow-sm hidden transition">
+            <div class="flex justify-between items-center mb-6 border-b pb-2">
+                <h2 class="font-bold text-xl">Kelola Produk & Galeri</h2>
+                <button onclick="loadManageData()" class="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded flex items-center gap-1"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh</button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-600">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="p-3">Gambar</th>
+                            <th class="p-3">Tipe</th>
+                            <th class="p-3">Nama/Desc</th>
+                            <th class="p-3">Harga</th>
+                            <th class="p-3 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manageTableBody" class="divide-y">
+                        <!-- Data diisi via JS -->
+                    </tbody>
+                </table>
+                <div id="manageLoading" class="text-center py-8 text-gray-500 hidden">Memuat data...</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 z-50 hidden flex flex-col items-center justify-center backdrop-blur-sm">
+        <div class="loader mb-4"></div>
+        <p class="font-medium text-gray-600" id="loadingText">Sedang Mengunggah Data...</p>
+        <p class="text-sm text-gray-400 mt-2">Mohon tunggu, jangan tutup halaman ini.</p>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // KONFIGURASI ADMIN
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwuDhH45Ch01OWV1_PTH9RTQ8y_32cegll2H53vE3FAGGH1EK91biIa7nI8vXPFDg0xPw/exec"; // Ganti dengan URL Web App Apps Script
+        
+        let currentPassword = "";
+
+        async function checkPassword(e) {
+            e.preventDefault();
+            const pass = document.getElementById('adminPassword').value;
+            
+            if (GAS_URL === "URL_WEB_APP_ANDA_DISINI" || !GAS_URL) {
+                alert("Anda belum mengkonfigurasi GAS_URL di dalam kode file admin.html!");
+                return;
+            }
+
+            try {
+                // Tampilkan loading kecil di tombol
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerText;
+                btn.innerText = "Memeriksa...";
+                btn.disabled = true;
+
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', password: pass })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    currentPassword = pass; // Simpan untuk upload nanti
+                    document.getElementById('loginOverlay').classList.add('opacity-0', 'pointer-events-none');
+                    document.getElementById('bodyEl').classList.remove('overflow-hidden');
+                    setTimeout(() => document.getElementById('loginOverlay').remove(), 300);
+                } else {
+                    alert(result.message);
+                    document.getElementById('adminPassword').value = '';
+                }
+                
+                btn.innerText = originalText;
+                btn.disabled = false;
+            } catch(err) {
+                alert("Gagal menghubungi server. Pastikan URL benar.");
+                e.target.querySelector('button').innerText = "Masuk";
+                e.target.querySelector('button').disabled = false;
+            }
+        }
+
+        function switchTab(tab) {
+            const tMenu = document.getElementById('tabMenu');
+            const tGallery = document.getElementById('tabGallery');
+            const tManage = document.getElementById('tabManage');
+            
+            const bMenu = document.getElementById('btnTabMenu');
+            const bGallery = document.getElementById('btnTabGallery');
+            const bManage = document.getElementById('btnTabManage');
+
+            // Reset all
+            [tMenu, tGallery, tManage].forEach(t => t.classList.add('hidden'));
+            [bMenu, bGallery, bManage].forEach(b => b.className = "px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg transition hover:bg-gray-300");
+            
+            if (bManage) bManage.classList.add('flex', 'items-center', 'gap-2');
+
+            if (tab === 'menu') {
+                tMenu.classList.remove('hidden');
+                bMenu.className = "px-6 py-2 bg-[#C8102E] text-white font-bold rounded-lg transition";
+            } else if (tab === 'gallery') {
+                tGallery.classList.remove('hidden');
+                bGallery.className = "px-6 py-2 bg-gray-800 text-white font-bold rounded-lg transition";
+            } else if (tab === 'manage') {
+                tManage.classList.remove('hidden');
+                bManage.className = "px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg transition flex items-center gap-2";
+                loadManageData();
+            }
+        }
+
+        async function loadManageData() {
+            if (!GAS_URL || GAS_URL === "URL_WEB_APP_ANDA_DISINI") return;
+            
+            const tbody = document.getElementById('manageTableBody');
+            const loader = document.getElementById('manageLoading');
+            
+            tbody.innerHTML = '';
+            loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch(GAS_URL);
+                const result = await response.json();
+                
+                loader.classList.add('hidden');
+                
+                if (result.status === 'success') {
+                    if (result.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Belum ada data</td></tr>';
+                        return;
+                    }
+
+                    result.data.forEach(item => {
+                        let hargaStr = item.Harga ? `Rp ${parseInt(item.Harga).toLocaleString('id-ID')}` : '-';
+                        let descStr = item.Tipe === 'Menu' ? item.Nama : 'Gambar Galeri';
+                        
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-3">
+                                    <img src="${item.Image}" class="w-12 h-12 rounded object-cover border">
+                                </td>
+                                <td class="p-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-xs rounded font-medium">${item.Tipe}</span>
+                                </td>
+                                <td class="p-3 font-medium text-gray-800">${descStr}</td>
+                                <td class="p-3">${hargaStr}</td>
+                                <td class="p-3 text-right">
+                                    <button onclick="deleteItem('${item.ID}')" class="px-3 py-1 bg-red-100 text-red-600 hover:bg-red-200 rounded text-xs font-bold transition">Hapus</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (err) {
+                loader.classList.add('hidden');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Gagal mengambil data</td></tr>';
+            }
+            lucide.createIcons();
+        }
+
+        async function deleteItem(id) {
+            if(!confirm("Yakin ingin menghapus data ini? Gambar di Google Drive juga akan dipindahkan ke Sampah.")) return;
+
+            const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('loadingText').innerText = "Sedang menghapus data...";
+            overlay.classList.remove('hidden');
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'delete', password: currentPassword, id: id })
+                });
+                
+                const result = await response.json();
+                overlay.classList.add('hidden');
+                document.getElementById('loadingText').innerText = "Sedang Mengunggah Data..."; // reset
+
+                if (result.status === 'success') {
+                    loadManageData(); // refresh list
+                } else {
+                    alert(result.message);
+                }
+            } catch(e) {
+                overlay.classList.add('hidden');
+                alert("Terjadi kesalahan jaringan.");
+            }
+        }
+
+        async function submitData(event, type) {
+            event.preventDefault();
+            
+            if (!GAS_URL || GAS_URL === "URL_WEB_APP_ANDA_DISINI") {
+                alert("Anda belum mengkonfigurasi GAS_URL di dalam kode file admin.html!");
+                return;
+            }
+
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('hidden');
+            
+            try {
+                let fileInput = type === 'Menu' ? document.getElementById('mImage') : document.getElementById('gImage');
+                let file = fileInput.files[0];
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    throw new Error("Ukuran gambar tidak boleh lebih dari 2MB untuk menjaga kecepatan web.");
+                }
+
+                // Read file as Base64
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                
+                reader.onload = async () => {
+                    const base64Data = reader.result;
+                    
+                    let payload = {
+                        password: currentPassword,
+                        image: base64Data,
+                        filename: file.name,
+                        mimeType: file.type,
+                        tipe: type
+                    };
+
+                    if (type === 'Menu') {
+                        payload.nama = document.getElementById('mNama').value;
+                        payload.kategori = document.getElementById('mKategori').value;
+                        payload.harga = document.getElementById('mHarga').value;
+                        payload.deskripsi = document.getElementById('mDeskripsi').value;
+                        payload.bestSeller = document.getElementById('mBestSeller').checked;
+                    }
+
+                    // Perform POST to GAS
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                        // Note: Tidak memakai Content-Type application/json karena CORS preflight kadang ditolak Apps Script jika tidak di set up sempurna. 
+                        // Apps script bisa membaca e.postData.contents sebagai plain text lalu diparse sebagai JSON.
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        alert("Berhasil mengunggah " + type + "!");
+                        if (type === 'Menu') document.getElementById('formMenu').reset();
+                        else document.getElementById('formGallery').reset();
+                    } else {
+                        throw new Error(result.message);
+                    }
+                    overlay.classList.add('hidden');
+                };
+                
+                reader.onerror = () => {
+                    throw new Error("Gagal membaca file gambar.");
+                };
+
+            } catch (error) {
+                overlay.classList.add('hidden');
+                alert("Terjadi kesalahan: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
