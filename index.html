@@ -449,8 +449,10 @@
         </div>
         
         <!-- Cart Items -->
-        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4">
-            <!-- Items injected by JS -->
+        <div class="flex-1 overflow-y-auto p-6 relative">
+            <div id="cartItemsContainer" class="space-y-4">
+                <!-- Items injected by JS -->
+            </div>
             <div class="text-center text-gray-400 mt-10 hidden" id="emptyCartMsg">
                 <i data-lucide="shopping-bag" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
                 <p>Keranjang masih kosong.<br>Yuk, pesan makanan enak!</p>
@@ -848,7 +850,6 @@
             
             if (cart.length === 0) {
                 container.innerHTML = '';
-                container.appendChild(emptyMsg);
                 emptyMsg.classList.remove('hidden');
                 document.getElementById('subtotalPrice').innerText = 'Rp 0';
                 document.getElementById('totalPrice').innerText = 'Rp 0';
